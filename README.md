@@ -28,4 +28,4 @@ Learning material on [LinkedIn](https://www.linkedin.com/learning/web-portfolio-
 
 - The Manifest Starts our Chrome Extension
 
-- The Panel is what is display in our Inspector
+- The Panel is what displays inside our new Inspector Tool
