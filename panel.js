@@ -39,8 +39,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     }
   
     function sendMessage(msg) {
-  
+      port.postMessage(msg)
     }
+
+    sendMessage({subject: "renderComment", resp: "test"})
   
     function listenToBoardSelect(baseUrl, accessToken) {
       const boardSelect = document.getElementById('board_select');
@@ -60,8 +62,13 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   
     function listenForMessages(baseUrl, boardId, accessToken) {
       // CHALLENGE 2B: Add Listener to chrome.onMessage and do an IF statements checking to see if the subject is saveComment
-  
-        return
+      chrome.runtime.onMessage.addListener((msg) => {
+        if (msg.subject === "saveComment") {
+          
+        }
+      })
+
+      return
     }
   
     function addTagToContent(card, comment) {
@@ -71,12 +78,12 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         var { url, posX, posY, commentText, commentAlert } = parsedComment;
         if(parsedComment) {
           // CHALLENGE 2E: Add a sendMessage call with subject: “renderComment” and the following resp
-          // resp: {card, comment: {commentId: comment.id, url, posX, posY, commentText, commentAlert}}
+          sendMessage({subject: "renderComment",  resp: {card, comment: {commentId: comment.id, url, posX, posY, commentText, commentAlert}}})
         }
       } else {
         // CHALLENGE 2E: Add a sendMessage call with subject: “renderComment” and the following resp
-        // resp: {card, comment: {posX: "10", posY: "10", commentText: {text: ""}}}
-        
+        // 
+        sendMessage({subject: "renderComment", resp: {card, comment: {posX: "10", posY: "10", commentText: {text: ""}}}})
         // CHALLENGE 4A: Add a postData function that creates a new comment
         // Note: you'll need the baseURL, boardId and accessToken
         // THEN pass in the commentID that comes back from the post to the resp.comment.commentId

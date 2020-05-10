@@ -25,3 +25,7 @@ Learning material on [LinkedIn](https://www.linkedin.com/learning/web-portfolio-
         2. [GitKraken Glo API](https://gloapi.gitkraken.com/v1/docs/)
 
     - connecting to an app [GitKraken](https://app.gitkraken.com)
+
+    - The Manifest Starts our Chrome Extension
+
+    - The Panel is what is display in our Inspector
