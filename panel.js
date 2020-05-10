@@ -42,7 +42,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
   
     // Removes the Access Token
     function removePAT() {
-      chrome.storage.local.remove({"gscPAT"});
+      chrome.storage.local.remove("gscPAT");
     }
   
     function sendMessage(msg) {
