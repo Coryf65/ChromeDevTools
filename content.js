@@ -58,11 +58,9 @@ function dragEnd(e) {
   const commentText = document.getElementById("input" + commentId).value;
   const posX = e.clientX - 25;
   const posY = e.clientY - 25;
-  const text = 'gloCommentTag=' + window.location.href + '?posX=' + posX + '&posY=' + posY + ' gloCommentTagsText=' + commentText;
+  const text = 'gloCommentTag=' + window.location.href + '?posX=' + posX + '&posY=' + posY + ' gloCommentTagText=' + commentText;
   // CHALLENGE 2C: Add a sendMessage call with subject: “saveComment” and the following resp
-  // 
-  sendMessage({subject: "saveComment", resp: {card: { cardId },comment:{commentId, 
-    posX, posY, commentText, text }}})
+  sendMessage({subject: "saveComment", resp: {card: { cardId },comment:{commentId, posX, posY, commentText, text }}})
   removeTag(commentId);
 }
 
@@ -71,19 +69,9 @@ function saveComment (msg, e) {
   e.stopPropagation();
   const posX = e.clientX - 25;
   const posY = e.clientY - 25;
-  const text = 'gloCommentTag=' + window.location.href + '?posX=' + posX + '&posY=' + posY + ' gloCommentTagsText=' + commentInput.value;
+  const text = 'gloCommentTag=' + window.location.href + '?posX=' + posX + '&posY=' + posY + ' gloCommentTagText=' + commentInput.value;
   // CHALLENGE 2D: Add a sendMessage call with subject: “saveComment” and the following resp
-  // 
-  sendMessage({subject: "saveComment", 
-    resp: {
-        card: msg.resp.card, 
-        comment:{ 
-            commentId: msg.resp.comment.commentId, 
-            posX, 
-            posY, 
-            commentText: commentInput.value, 
-            text}  
-  }})
+  sendMessage({subject: "saveComment", resp: {card: msg.resp.card, comment:{ commentId: msg.resp.comment.commentId, posX, posY, commentText: commentInput.value, text}}})
 }
 
 function removeTag(commentId) {

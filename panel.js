@@ -66,6 +66,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
               const col = renderColumn(column);
               // CHALLENGE 3A THEN loop through the columns and use getData to get the cards using the columnId (for help check API documentation: https://gloapi.gitkraken.com/v1/docs/)
               getData(baseUrl + 'boards/' + boardId + '/columns/' + column.id + '/cards/' + accessToken)
+                // CHALLENGE 3B THEN loop through the cards and use getData to get the comments
+                // then forEach comment pass the card and the comment to the addTagToContent function
                 .then((cards) => {
                   cards.forEach((card) => {
                     getData(baseUrl + 'boards/' + boardId + '/cards/' + card.id + '/comments' + accessToken)
@@ -74,16 +76,15 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                           addTagToContent(card, comment);
                         })
                       })
+                      const taskCard = renderTasksCard(card, baseUrl, accessToken, boardId);
+                      col.appendChild(taskCard);
                   })
                 })
-              // CHALLENGE 3B THEN loop through the cards and use getData to get the comments
-              // then forEach comment pass the card and the comment to the addTagToContent function
-              const taskCard = renderTasksCard(card);
-              col.appendChild(taskCard);        
+                contentCont.appendChild(col);
+              
             })
           })
-        contentCont.appendChild(col);
-
+        
       });
   
       
@@ -93,12 +94,21 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     function listenForMessages(baseUrl, boardId, accessToken) {
       // CHALLENGE 2B: Add Listener to chrome.onMessage and do an IF statements checking to see if the subject is saveComment
       chrome.runtime.onMessage.addListener((msg) => {
-        if (msg.subject === "saveComment") {
-          
+        if(msg.subject === "saveComment") {
+          chrome.tabs.query({currentWindow: true, active: true}, (tabs) => {
+            const url = baseUrl + "boards/" + boardId + "/cards/" + msg.resp.card.id + "/comments/" + msg.resp.comment.commentId + accessToken;
+            const commentBody = {
+              text: "gloCommentTag=" + tabs[0].url + "?posX=" + msg.resp.comment.posX + "&posY=" + msg.resp.comment.posY + " gloCommentTagText=" + msg.resp.comment.commentText
+            }
+            postData(url, commentBody)
+              .then(() => {
+                addTagToContent(msg.resp.card, msg.resp.comment)
+              })
+          });
+          // 
         }
       })
-
-      return
+        return
     }
   
     function addTagToContent(card, comment) {
@@ -106,18 +116,21 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const parsedComment = parseGloCommentTag(comment.text);
         //  using ES6 destructuring to break out variables
         var { url, posX, posY, commentText, commentAlert } = parsedComment;
+        
         if(parsedComment) {
           // CHALLENGE 2E: Add a sendMessage call with subject: “renderComment” and the following resp
-          sendMessage({subject: "renderComment",  resp: {card, comment: {commentId: comment.id, url, posX, posY, commentText, commentAlert}}})
+          // resp: {card, comment: {commentId: comment.id, url, posX, posY, commentText, commentAlert}}
+          sendMessage({subject: "renderComment", resp: {card, comment: {commentId: comment.id, url, posX, posY, commentText, commentAlert}}})
         }
       } else {
-        // CHALLENGE 2E: Add a sendMessage call with subject: “renderComment” and the following resp
-        // 
-        sendMessage({subject: "renderComment", resp: {card, comment: {posX: "10", posY: "10", commentText: {text: ""}}}})
+        // CHALLENGE 2E: Add a sendMessage call with subject: “renderComment” and the following resp      
+        
         // CHALLENGE 4A: Add a postData function that creates a new comment
         // Note: you'll need the baseURL, boardId and accessToken
         // THEN pass in the commentID that comes back from the post to the resp.comment.commentId
+        // const url = baseUrl + "boards/" + boardId + "/cards/" + card.id + "/comments" + accessToken;
         
+        sendMessage({subject: "renderComment", resp: {card, comment: {posX: "10", posY: "10", commentText: {text: ""}}}});
       }
     }
   
