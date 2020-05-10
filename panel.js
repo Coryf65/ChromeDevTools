@@ -15,7 +15,13 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const contentCont = document.getElementById('board_content');
   
     // check to see if there is a Glo Screen Comment Personal Authorization Token already saved
-  
+    chrome.storage.local.get("gscPAT", (results) => {
+      if (!results.gscPAT) {
+        chrome.windows.create({url: "https://app.gitkraken.com/pats/new?name=GloScreenComments&scope=board:write"})
+      } else {
+        patToInput(results.gscPAT);
+      }
+    })
       // if it does NOT exist, open the gitkracken PAT page
       // PAT URL page: https://app.gitkraken.com/pats/new?name=GloScreenComments&scope=board:write
       // here we are pasing the name and the scope as parameters of the URL so that they automatically populate on the opening page
@@ -31,11 +37,12 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     function storePAT(e, v) {
       // here you can use an ES6 fat arrow function as a callback
       // () => {} is short hand for function() {}
-  
+      chrome.storage.local.set({"gscPAT": v})
     }
   
+    // Removes the Access Token
     function removePAT() {
-  
+      chrome.storage.local.remove({"gscPAT"});
     }
   
     function sendMessage(msg) {
