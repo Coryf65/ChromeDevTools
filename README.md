@@ -10,7 +10,11 @@ a Chrome Developer Tool (DevTool / Extension) that interacts with the GitKraken 
 
 ### More Info
 
-Learning material on [LinkedIn](https://www.linkedin.com/learning/web-portfolio-projects-api-based-chrome-developer-tool)
+Following along with a [LinkedIn](https://www.linkedin.com/learning/web-portfolio-projects-api-based-chrome-developer-tool) course!
+
+### My Goal
+
+I want to learn how Chrome Dev tools are made and an example of one.
 
 
 ## Notes
