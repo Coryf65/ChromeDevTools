@@ -20,6 +20,14 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         chrome.windows.create({url: "https://app.gitkraken.com/pats/new?name=GloScreenComments&scope=board:write"})
       } else {
         patToInput(results.gscPAT);
+
+        const baseUrl = 'https://gloapi.gitkraken.com/v1/glo/';
+        const accessToken = '?access_token' + results.gscPAT;
+        getData(baseUrl + 'boards/' + accessToken)
+          .then((data) => {
+            renderBoardDropDown(data, boardSelect);
+            listenToBoardSelect(baseUrl, accessToken);
+          });
       }
     })
       // if it does NOT exist, open the gitkracken PAT page
@@ -32,7 +40,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         // Access the boards
   
         // variables to concatenate urls (see: https://gloapi.gitkraken.com/v1/docs/ for more information) 
-        // const baseUrl = 'https://gloapi.gitkraken.com/v1/glo/'
+        // 
   
     function storePAT(e, v) {
       // here you can use an ES6 fat arrow function as a callback
@@ -159,6 +167,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       }
     }
   
+    // fetch and promise
     function postData(url, data) {
       // when posting you have to turn the JSON object into a string so that the recieving end can read it 
       return fetch(url, {
