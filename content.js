@@ -4,7 +4,8 @@ var port = chrome.runtime.connect();
 // gets called when the on message event is called
 port.onMessage.addListener((msg) => {
     if(msg.subject === "renderComment"){
-      alert(JSON.stringify(msg));
+      //alert(JSON.stringify(msg));
+      renderComment(msg);
     }
 })
 

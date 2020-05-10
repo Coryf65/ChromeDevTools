@@ -51,8 +51,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     function sendMessage(msg) {
       port.postMessage(msg)
     }
-
-    sendMessage({subject: "renderComment", resp: "test"})
   
     function listenToBoardSelect(baseUrl, accessToken) {
       const boardSelect = document.getElementById('board_select');
@@ -65,6 +63,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             contentCont.innerHTML = '';
             const columns = data.columns;
             columns.forEach((column) => {
+              const col = renderColumn(column);
               // CHALLENGE 3A THEN loop through the columns and use getData to get the cards using the columnId (for help check API documentation: https://gloapi.gitkraken.com/v1/docs/)
               getData(baseUrl + 'boards/' + boardId + '/columns/' + column.id + '/cards/' + accessToken)
                 .then((cards) => {
@@ -79,9 +78,12 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                 })
               // CHALLENGE 3B THEN loop through the cards and use getData to get the comments
               // then forEach comment pass the card and the comment to the addTagToContent function
+              const taskCard = renderTasksCard(card);
+              col.appendChild(taskCard);        
             })
           })
-        
+        contentCont.appendChild(col);
+
       });
   
       
