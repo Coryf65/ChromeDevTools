@@ -15,32 +15,27 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const contentCont = document.getElementById('board_content');
   
     // check to see if there is a Glo Screen Comment Personal Authorization Token already saved
-    chrome.storage.local.get("gscPAT", (results) => {
-      if (!results.gscPAT) {
-        chrome.windows.create({url: "https://app.gitkraken.com/pats/new?name=GloScreenComments&scope=board:write"})
-      } else {
-        patToInput(results.gscPAT);
-
-        const baseUrl = 'https://gloapi.gitkraken.com/v1/glo/';
-        const accessToken = '?access_token' + results.gscPAT;
-        getData(baseUrl + 'boards/' + accessToken)
-          .then((data) => {
-            renderBoardDropDown(data, boardSelect);
-            listenToBoardSelect(baseUrl, accessToken);
-          });
-      }
-    })
-      // if it does NOT exist, open the gitkracken PAT page
-      // PAT URL page: https://app.gitkraken.com/pats/new?name=GloScreenComments&scope=board:write
-      // here we are pasing the name and the scope as parameters of the URL so that they automatically populate on the opening page
-      // a ? starts the parameters in a URL and the & separates multiple parameters
-  
-        // Open the gitkraken app with scope and name fields filled in     
-  
-        // Access the boards
-  
-        // variables to concatenate urls (see: https://gloapi.gitkraken.com/v1/docs/ for more information) 
-        // 
+  chrome.storage.local.get("gscPAT", (results) => {
+    // if it does NOT exist, open the gitkracken PAT page
+    // PAT URL page: https://app.gitkraken.com/pats/new?name=GloScreenComments&scope=board:write
+    // here we are pasing the name and the scope as parameters of the URL so that they automatically populate on the opening page
+    // a ? starts the parameters in a URL and the & separates multiple parameters
+    if(!results.gscPAT) {
+      // Open the gitkraken app with scope and name fields filled in     
+      chrome.windows.create({url: "https://app.gitkraken.com/pats/new?name=GloScreenComments&scope=board:write"})
+    } else {
+      patToInput(results.gscPAT);
+      // Access the boards
+      // variables to concatenate urls (see: https://gloapi.gitkraken.com/v1/docs/ for more information) 
+      const baseUrl = 'https://gloapi.gitkraken.com/v1/glo/';
+      const accessToken = '?access_token' + results.gscPAT;
+      getData(baseUrl + 'boards/' + accessToken)
+        .then((data) => {
+          renderBoardDropDown(data, boardSelect);
+          listenToBoardSelect(baseUrl, accessToken);
+        });
+    }
+  })
   
     function storePAT(e, v) {
       // here you can use an ES6 fat arrow function as a callback
@@ -65,13 +60,21 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
       boardSelect.addEventListener('change', (e) => {
         const boardId = e.target.value;
         listenForMessages(baseUrl, boardId, accessToken);
-  
+        getData(baseUrl + 'boards/' + boardId + accessToken + '&fields=columns')
+          .then((data) => {
+            contentCont.innerHTML = '';
+            const columns = data.columns;
+            columns.forEach((column) => {
+              // CHALLENGE 3A THEN loop through the columns and use getData to get the cards using the columnId (for help check API documentation: https://gloapi.gitkraken.com/v1/docs/)
+      
+              // CHALLENGE 3B THEN loop through the cards and use getData to get the comments
+              // then forEach comment pass the card and the comment to the addTagToContent function
+            })
+          })
+        
       });
   
-      // CHALLENGE 3A THEN loop through the columns and use getData to get the cards using the columnId
       
-      // CHALLENGE 3B THEN loop through the cards and use getData to get the comments
-      // then forEach comment pass the card and the comment to the addTagToContent function
   
     }
   
