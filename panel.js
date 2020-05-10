@@ -66,7 +66,17 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             const columns = data.columns;
             columns.forEach((column) => {
               // CHALLENGE 3A THEN loop through the columns and use getData to get the cards using the columnId (for help check API documentation: https://gloapi.gitkraken.com/v1/docs/)
-      
+              getData(baseUrl + 'boards/' + boardId + '/columns/' + column.id + '/cards/' + accessToken)
+                .then((cards) => {
+                  cards.forEach((card) => {
+                    getData(baseUrl + 'boards/' + boardId + '/cards/' + card.id + '/comments' + accessToken)
+                      .then((comments) => {
+                        comments.forEach((comment) => {
+                          addTagToContent(card, comment);
+                        })
+                      })
+                  })
+                })
               // CHALLENGE 3B THEN loop through the cards and use getData to get the comments
               // then forEach comment pass the card and the comment to the addTagToContent function
             })
