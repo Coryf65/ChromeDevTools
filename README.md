@@ -14,3 +14,14 @@ Learning material on [LinkedIn](https://www.linkedin.com/learning/web-portfolio-
 
 
 ## Notes
+
+    - Using 2 APIs
+
+        1. [Chrome API](https://developer.chrome.com/extensions/api_index)
+
+            - [Runtime](https://developer.chrome.com/extensions/runtime)
+            - [Storage](https://developer.chrome.com/extensions/storage)
+
+        2. [GitKraken Glo API](https://gloapi.gitkraken.com/v1/docs/)
+
+    - connecting to an app [GitKraken](https://app.gitkraken.com)
